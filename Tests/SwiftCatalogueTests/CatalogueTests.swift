@@ -14,7 +14,7 @@ struct CatalogueTests {
 
     @Test("can initialize a resource factory provider")
     func testResourceProviderInit() async throws {
-        let provider = ResourceFactoryProvider(constructor: { return 1 })
+        let provider = FactoryProvider(constructor: { return 1 })
         try #require(provider != nil)
     }
 
@@ -24,7 +24,7 @@ struct CatalogueTests {
 
         #expect(await catalogue.resolve(Int.self) == nil)
 
-        let provider = ResourceFactoryProvider(constructor: { return 1 })
+        let provider = FactoryProvider(constructor: { return 1 })
         await catalogue.register(Int.self, resourceProvider: provider)
 
         #expect(await catalogue.resolve(Int.self) != nil)
@@ -36,7 +36,7 @@ struct CatalogueTests {
 
         #expect(await catalogue.resolve(String.self) == nil)
 
-        let provider = ResourceFactoryProvider(constructor: { return "Hello, Testing" })
+        let provider = FactoryProvider(constructor: { return "Hello, Testing" })
         await catalogue.register(String.self, resourceProvider: provider)
 
         #expect(await catalogue.resolve(String.self) != nil)
@@ -63,7 +63,7 @@ struct CatalogueTests {
     func testReplaceFactoryWithCachedProvider() async throws {
         let catalogue = Catalogue()
 
-        let factory = ResourceFactoryProvider(constructor: { return 1 })
+        let factory = FactoryProvider(constructor: { return 1 })
         await catalogue.register(Int.self, resourceProvider: factory)
 
         #expect(await catalogue.resolve(Int.self) == 1)
@@ -83,7 +83,7 @@ struct CatalogueTests {
 
         #expect(await catalogue.resolve(Int.self) == 1)
 
-        let factory = ResourceFactoryProvider(constructor: { return 2 })
+        let factory = FactoryProvider(constructor: { return 2 })
         await catalogue.register(Int.self, resourceProvider: factory)
 
         #expect(await catalogue.resolve(Int.self) == 2)
@@ -93,10 +93,10 @@ struct CatalogueTests {
     func testAddNamedProviders() async throws {
         let catalogue = Catalogue()
 
-        let factory1 = ResourceFactoryProvider(constructor: { return 1 })
+        let factory1 = FactoryProvider(constructor: { return 1 })
         await catalogue.register(Int.self, resourceProvider: factory1, named: "one")
 
-        let factory2 = ResourceFactoryProvider(constructor: { return 2 })
+        let factory2 = FactoryProvider(constructor: { return 2 })
         await catalogue.register(Int.self, resourceProvider: factory2, named: "two")
 
         #expect(await catalogue.resolve(Int.self, named: "one") == 1)

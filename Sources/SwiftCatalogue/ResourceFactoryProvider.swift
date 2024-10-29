@@ -1,5 +1,5 @@
 /// A resource provider that always constructs a new instance of T
-struct ResourceFactoryProvider<T: Sendable>: ResourceProvider {
+struct FactoryProvider<T: Sendable>: ResourceProvider {
     /// The constructor for the resource
     var constructor: @Sendable () async -> T
 

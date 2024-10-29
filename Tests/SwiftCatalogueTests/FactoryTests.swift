@@ -6,7 +6,7 @@ import Testing
 struct FactoryTests {
     @Test("can initialize an Int factory")
     func testFactoryInit() async throws {
-        let factory = ResourceFactoryProvider(constructor: { return 1 })
+        let factory = FactoryProvider(constructor: { return 1 })
 
         try #require(factory != nil)
         #expect(await factory.resolve() == 1)
@@ -16,7 +16,7 @@ struct FactoryTests {
     func testStoreFactoryInCatalogue() async throws {
         let catalogue = Catalogue()
 
-        let factory = ResourceFactoryProvider(constructor: { return 1 })
+        let factory = FactoryProvider(constructor: { return 1 })
         await catalogue.register(Int.self, resourceProvider: factory)
 
         #expect(await catalogue.resolve(Int.self) == 1)
@@ -26,10 +26,10 @@ struct FactoryTests {
     func testReplaceFactoryInCatalogue() async throws {
         let catalogue = Catalogue()
 
-        let factory1 = ResourceFactoryProvider(constructor: { return 1 })
+        let factory1 = FactoryProvider(constructor: { return 1 })
         await catalogue.register(Int.self, resourceProvider: factory1)
 
-        let factory2 = ResourceFactoryProvider(constructor: { return 2 })
+        let factory2 = FactoryProvider(constructor: { return 2 })
         await catalogue.register(Int.self, resourceProvider: factory2)
 
         #expect(await catalogue.resolve(Int.self) == 2)
@@ -37,7 +37,7 @@ struct FactoryTests {
 
     @Test("can initialize a String factory")
     func testStringFactoryInit() async throws {
-        let factory = ResourceFactoryProvider(constructor: { return "Hello, Testing" })
+        let factory = FactoryProvider(constructor: { return "Hello, Testing" })
         try #require(factory != nil)
 
         #expect(await factory.resolve() == "Hello, Testing")
@@ -49,7 +49,7 @@ struct FactoryTests {
             let value: String
         }
 
-        let factory = ResourceFactoryProvider(constructor: {
+        let factory = FactoryProvider(constructor: {
             return TestRescource(value: "Hello, Testing")
         })
         try #require(factory != nil)
