@@ -62,6 +62,7 @@ struct CatalogueTests {
     @Test("can replace a factory provider with a cached provider")
     func testReplaceFactoryWithCachedProvider() async throws {
         let catalogue = Catalogue()
+
         let factory = ResourceFactoryProvider(constructor: { return 1 })
         await catalogue.register(Int.self, resourceProvider: factory)
 
@@ -76,6 +77,7 @@ struct CatalogueTests {
     @Test("can replace a cached provider with a factory provider")
     func testReplaceCachedWithFactoryProvider() async throws {
         let catalogue = Catalogue()
+
         let cached = CachedResourceContainer(constructor: { return 1 })
         await catalogue.register(Int.self, resourceProvider: cached)
 
@@ -85,5 +87,19 @@ struct CatalogueTests {
         await catalogue.register(Int.self, resourceProvider: factory)
 
         #expect(await catalogue.resolve(Int.self) == 2)
+    }
+
+    @Test("can add named providers of the same type")
+    func testAddNamedProviders() async throws {
+        let catalogue = Catalogue()
+
+        let factory1 = ResourceFactoryProvider(constructor: { return 1 })
+        await catalogue.register(Int.self, resourceProvider: factory1, named: "one")
+
+        let factory2 = ResourceFactoryProvider(constructor: { return 2 })
+        await catalogue.register(Int.self, resourceProvider: factory2, named: "two")
+
+        #expect(await catalogue.resolve(Int.self, named: "one") == 1)
+        #expect(await catalogue.resolve(Int.self, named: "two") == 2)
     }
 }
