@@ -4,7 +4,7 @@ import Testing
 
 @Suite("test Factory")
 struct FactoryTests {
-    @Test("can initialize an Int factory")
+    @Test("can initialize")
     func testFactoryInit() async throws {
         let factory = FactoryProvider(constructor: { return 1 })
 

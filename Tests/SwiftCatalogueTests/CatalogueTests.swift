@@ -90,16 +90,37 @@ struct CatalogueTests {
         #expect(await catalogue.resolve(Int.self) == 2)
     }
 
+    @Test("can resolve a named provider")
+    func testResolveNamedProvider() async throws {
+        let catalogue = Catalogue()
+        let factory = FactoryProvider(constructor: { return 1 })
+        await catalogue.register(Int.self, resourceProvider: factory, named: "int factory")
+
+        #expect(await catalogue.resolve(Int.self, named: "int factory") == 1)
+    }
+
     @Test("can add named providers of the same type")
     func testAddNamedProviders() async throws {
         let catalogue = Catalogue()
-        let factory1 = FactoryProvider(constructor: { return 1 })
-        await catalogue.register(Int.self, resourceProvider: factory1, named: "one")
+        let factory = FactoryProvider(constructor: { return 1 })
+        await catalogue.register(Int.self, resourceProvider: factory, named: "int factory")
 
-        let factory2 = FactoryProvider(constructor: { return 2 })
-        await catalogue.register(Int.self, resourceProvider: factory2, named: "two")
+        let container = CachedResourceContainer(constructor: { return 2 })
+        await catalogue.register(Int.self, resourceProvider: container, named: "int container")
 
-        #expect(await catalogue.resolve(Int.self, named: "one") == 1)
-        #expect(await catalogue.resolve(Int.self, named: "two") == 2)
+        #expect(await catalogue.resolve(Int.self, named: "int factory") == 1)
+        #expect(await catalogue.resolve(Int.self, named: "int container") == 2)
+    }
+
+    @Test("named providers of different types do not conflict")
+    func testNamedProvidersDontConflict() async throws {
+        let catalogue = Catalogue()
+        let intFactory = FactoryProvider(constructor: { return 1 })
+        let stringFactory = FactoryProvider(constructor: { return "test" })
+        await catalogue.register(Int.self, resourceProvider: intFactory, named: "factory")
+        await catalogue.register(String.self, resourceProvider: stringFactory, named: "factory")
+
+        #expect(await catalogue.resolve(Int.self, named: "factory") == 1)
+        #expect(await catalogue.resolve(String.self, named: "factory") == "test")
     }
 }
