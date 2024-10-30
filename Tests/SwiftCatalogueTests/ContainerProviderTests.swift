@@ -6,9 +6,11 @@ import Testing
 struct ContainerProviderTests {
     @Test("can initialize")
     func testContainerProviderInit() async throws {
-        let provider = CachedResourceContainer(constructor: { return "Hello, World!" })
+        let message = "Hello, World!"
+        let provider = CachedResourceContainer(constructor: { return message })
 
         try #require(provider != nil)
+        #expect(await provider.resolve() == message)
     }
 
     @Test("can add cached string resource provider to catalogue")
