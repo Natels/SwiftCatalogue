@@ -29,6 +29,8 @@ struct FactoryTests {
         let factory1 = FactoryProvider(constructor: { return 1 })
         await catalogue.register(Int.self, resourceProvider: factory1)
 
+        #expect(await catalogue.resolve(Int.self) == 1)
+
         let factory2 = FactoryProvider(constructor: { return 2 })
         await catalogue.register(Int.self, resourceProvider: factory2)
 
