@@ -1,14 +1,14 @@
 /// A container for a cached resource
-actor CachedResourceContainer<T: Sendable>: ResourceProvider {
+public actor CachedResourceContainer<T: Sendable>: ResourceProvider {
     private var instance: T?
 
     var constructor: () async -> T
 
-    init(constructor: @escaping () async -> T) {
+    public init(constructor: @escaping () async -> T) {
         self.constructor = constructor
     }
 
-    func resolve() async -> T {
+    public func resolve() async -> T {
         if let instance = instance {
             return instance
         } else {
