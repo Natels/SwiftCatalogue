@@ -1,5 +1,5 @@
 /// A collection of resource providers that can be resolved by key
-actor Catalogue: Sendable {
+public actor Catalogue: Sendable {
     private var resourceProviders: [CatalogueKey: any ResourceProvider] = [:]
 
     /// Register a resource provider for a given type
