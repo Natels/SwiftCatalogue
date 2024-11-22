@@ -6,20 +6,26 @@ actor Catalogue: Sendable {
     func register<T>(
         _ type: T.Type, resourceProvider: any ResourceProvider<T>,
         named: String = String(describing: T.self)
-    )
-    where T: Sendable {
+    ) where T: Sendable {
         let key = CatalogueKey(type: ObjectIdentifier(T.self), name: named)
 
         resourceProviders[key] = resourceProvider
     }
 
-    /// Resolve a resource by key if a provider is available
-    func resolve<T>(_ type: T.Type, named: String = String(describing: T.self)) async -> T?
-    where T: Sendable {
+    /// Resolve a resource by type and name if a provider is available
+    func resolve<T>(
+        _ type: T.Type,
+        named: String = String(describing: T.self)
+    ) async -> T? where T: Sendable {
         let key = CatalogueKey(type: ObjectIdentifier(T.self), name: named)
         let provider = resourceProviders[key] as! (any ResourceProvider<T>)?
 
         return await provider?.resolve()
+    }
+
+    /// Reset the catalogue to its initial state
+    func reset() {
+        resourceProviders = [:]
     }
 }
 
