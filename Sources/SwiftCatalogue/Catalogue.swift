@@ -6,7 +6,7 @@ public actor Catalogue: Sendable {
     public static let shared = Catalogue()
 
     /// Register a resource provider for a given type
-    func register<T>(
+    public func register<T>(
         _ type: T.Type, resourceProvider: any ResourceProvider<T>,
         named: String = String(describing: T.self)
     ) where T: Sendable {
@@ -16,7 +16,7 @@ public actor Catalogue: Sendable {
     }
 
     /// Resolve a resource by type and name if a provider is available
-    func resolve<T>(
+    public func resolve<T>(
         _ type: T.Type,
         named: String = String(describing: T.self)
     ) async -> T? where T: Sendable {
