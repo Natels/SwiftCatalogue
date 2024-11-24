@@ -2,6 +2,8 @@
 public actor Catalogue: Sendable {
     private var resourceProviders: [CatalogueKey: any ResourceProvider] = [:]
 
+    public init() {}
+
     /// Register a resource provider for a given type
     func register<T>(
         _ type: T.Type, resourceProvider: any ResourceProvider<T>,
@@ -21,11 +23,6 @@ public actor Catalogue: Sendable {
         let provider = resourceProviders[key] as! (any ResourceProvider<T>)?
 
         return await provider?.resolve()
-    }
-
-    /// Reset the catalogue to its initial state
-    func reset() {
-        resourceProviders = [:]
     }
 }
 

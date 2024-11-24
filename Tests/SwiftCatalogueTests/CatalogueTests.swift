@@ -8,7 +8,6 @@ struct CatalogueTests {
 
     init() async {
         catalogue = Catalogue()
-        await catalogue.reset()
     }
 
     @Test("can initialize a catalogue")
