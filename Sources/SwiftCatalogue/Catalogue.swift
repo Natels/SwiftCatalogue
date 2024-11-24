@@ -1,8 +1,9 @@
 /// A collection of resource providers that can be resolved by key
+@globalActor
 public actor Catalogue: Sendable {
     private var resourceProviders: [CatalogueKey: any ResourceProvider] = [:]
 
-    public init() {}
+    public static let shared = Catalogue()
 
     /// Register a resource provider for a given type
     func register<T>(
