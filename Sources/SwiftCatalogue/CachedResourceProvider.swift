@@ -8,6 +8,11 @@ public actor CachedResourceContainer<T: Sendable>: ResourceProvider {
         self.constructor = constructor
     }
 
+    public init(instance: T) {
+        self.instance = instance
+        self.constructor = { return instance }
+    }
+
     public func resolve() async -> T {
         if let instance = instance {
             return instance
