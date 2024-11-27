@@ -7,8 +7,9 @@ public actor Catalogue: Sendable {
 
     /// Register a resource provider for a given type
     public func register<T>(
-        _ type: T.Type, resourceProvider: any ResourceProvider<T>,
-        named: String = String(describing: T.self)
+        _ type: T.Type,
+        named: String = String(describing: T.self),
+        resourceProvider: any ResourceProvider<T>
     ) where T: Sendable {
         let key = CatalogueKey(type: ObjectIdentifier(T.self), name: named)
 
