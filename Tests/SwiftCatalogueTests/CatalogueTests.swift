@@ -28,7 +28,7 @@ struct CatalogueTests {
         #expect(await catalogue.resolve(Int.self) == nil)
 
         let provider = FactoryProvider(constructor: { return 1 })
-        await catalogue.register(Int.self, resourceProvider: provider)
+        await catalogue.register(Int.self, provider: provider)
 
         #expect(await catalogue.resolve(Int.self) != nil)
     }
@@ -38,7 +38,7 @@ struct CatalogueTests {
         #expect(await catalogue.resolve(String.self) == nil)
 
         let provider = FactoryProvider(constructor: { return "Hello, Testing" })
-        await catalogue.register(String.self, resourceProvider: provider)
+        await catalogue.register(String.self, provider: provider)
 
         #expect(await catalogue.resolve(String.self) != nil)
     }
@@ -55,7 +55,7 @@ struct CatalogueTests {
         #expect(await catalogue.resolve(String.self) == nil)
 
         let provider = CachedResourceContainer(constructor: { return "Hello, World!" })
-        await catalogue.register(String.self, resourceProvider: provider)
+        await catalogue.register(String.self, provider: provider)
 
         #expect(await catalogue.resolve(String.self) != nil)
     }
@@ -63,12 +63,12 @@ struct CatalogueTests {
     @Test("can replace a factory provider with a cached provider")
     func testReplaceFactoryWithCachedProvider() async throws {
         let factory = FactoryProvider(constructor: { return 1 })
-        await catalogue.register(Int.self, resourceProvider: factory)
+        await catalogue.register(Int.self, provider: factory)
 
         #expect(await catalogue.resolve(Int.self) == 1)
 
         let cached = CachedResourceContainer(constructor: { return 2 })
-        await catalogue.register(Int.self, resourceProvider: cached)
+        await catalogue.register(Int.self, provider: cached)
 
         #expect(await catalogue.resolve(Int.self) == 2)
     }
@@ -76,12 +76,12 @@ struct CatalogueTests {
     @Test("can replace a cached provider with a factory provider")
     func testReplaceCachedWithFactoryProvider() async throws {
         let cached = CachedResourceContainer(constructor: { return 1 })
-        await catalogue.register(Int.self, resourceProvider: cached)
+        await catalogue.register(Int.self, provider: cached)
 
         #expect(await catalogue.resolve(Int.self) == 1)
 
         let factory = FactoryProvider(constructor: { return 2 })
-        await catalogue.register(Int.self, resourceProvider: factory)
+        await catalogue.register(Int.self, provider: factory)
 
         #expect(await catalogue.resolve(Int.self) == 2)
     }
@@ -89,7 +89,7 @@ struct CatalogueTests {
     @Test("can resolve a named provider")
     func testResolveNamedProvider() async throws {
         let factory = FactoryProvider(constructor: { return 1 })
-        await catalogue.register(Int.self, named: "int factory", resourceProvider: factory)
+        await catalogue.register(Int.self, named: "int factory", provider: factory)
 
         #expect(await catalogue.resolve(Int.self, named: "int factory") == 1)
     }
@@ -97,10 +97,10 @@ struct CatalogueTests {
     @Test("can add named providers of the same type")
     func testAddNamedProviders() async throws {
         let factory = FactoryProvider(constructor: { return 1 })
-        await catalogue.register(Int.self, named: "int factory", resourceProvider: factory)
+        await catalogue.register(Int.self, named: "int factory", provider: factory)
 
         let container = CachedResourceContainer(constructor: { return 2 })
-        await catalogue.register(Int.self, named: "int container", resourceProvider: container)
+        await catalogue.register(Int.self, named: "int container", provider: container)
 
         #expect(await catalogue.resolve(Int.self, named: "int factory") == 1)
         #expect(await catalogue.resolve(Int.self, named: "int container") == 2)
@@ -110,8 +110,8 @@ struct CatalogueTests {
     func testNamedProvidersDontConflict() async throws {
         let intFactory = FactoryProvider(constructor: { return 1 })
         let stringFactory = FactoryProvider(constructor: { return "test" })
-        await catalogue.register(Int.self, named: "factory", resourceProvider: intFactory)
-        await catalogue.register(String.self, named: "factory", resourceProvider: stringFactory)
+        await catalogue.register(Int.self, named: "factory", provider: intFactory)
+        await catalogue.register(String.self, named: "factory", provider: stringFactory)
 
         #expect(await catalogue.resolve(Int.self, named: "factory") == 1)
         #expect(await catalogue.resolve(String.self, named: "factory") == "test")

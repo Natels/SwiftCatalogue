@@ -9,11 +9,11 @@ public actor Catalogue: Sendable {
     public func register<T>(
         _ type: T.Type,
         named: String = String(describing: T.self),
-        resourceProvider: any ResourceProvider<T>
+        provider: any ResourceProvider<T>
     ) where T: Sendable {
         let key = CatalogueKey(type: ObjectIdentifier(T.self), name: named)
 
-        resourceProviders[key] = resourceProvider
+        resourceProviders[key] = provider
     }
 
     /// Resolve a resource by type and name if a provider is available

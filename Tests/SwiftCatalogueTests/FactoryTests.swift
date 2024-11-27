@@ -17,7 +17,7 @@ struct FactoryTests {
         let catalogue = Catalogue()
 
         let factory = FactoryProvider(constructor: { return 1 })
-        await catalogue.register(Int.self, resourceProvider: factory)
+        await catalogue.register(Int.self, provider: factory)
 
         #expect(await catalogue.resolve(Int.self) == 1)
     }
@@ -27,12 +27,12 @@ struct FactoryTests {
         let catalogue = Catalogue()
 
         let factory1 = FactoryProvider(constructor: { return 1 })
-        await catalogue.register(Int.self, resourceProvider: factory1)
+        await catalogue.register(Int.self, provider: factory1)
 
         #expect(await catalogue.resolve(Int.self) == 1)
 
         let factory2 = FactoryProvider(constructor: { return 2 })
-        await catalogue.register(Int.self, resourceProvider: factory2)
+        await catalogue.register(Int.self, provider: factory2)
 
         #expect(await catalogue.resolve(Int.self) == 2)
     }

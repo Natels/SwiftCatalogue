@@ -20,7 +20,7 @@ struct ContainerProviderTests {
         #expect(await catalogue.resolve(String.self) == nil)
 
         let provider = CachedResourceContainer(constructor: { return "Hello, World!" })
-        await catalogue.register(String.self, resourceProvider: provider)
+        await catalogue.register(String.self, provider: provider)
 
         #expect(await catalogue.resolve(String.self) != nil)
     }
@@ -32,7 +32,7 @@ struct ContainerProviderTests {
         #expect(await catalogue.resolve(Int.self) == nil)
 
         let provider = CachedResourceContainer(constructor: { return 1 })
-        await catalogue.register(Int.self, resourceProvider: provider)
+        await catalogue.register(Int.self, provider: provider)
 
         #expect(await catalogue.resolve(Int.self) != nil)
     }
@@ -50,7 +50,7 @@ struct ContainerProviderTests {
         let provider = CachedResourceContainer(constructor: {
             return TestRescource(value: "Hello, Testing")
         })
-        await catalogue.register(TestRescource.self, resourceProvider: provider)
+        await catalogue.register(TestRescource.self, provider: provider)
 
         #expect(await catalogue.resolve(TestRescource.self) != nil)
         #expect(await catalogue.resolve(TestRescource.self)?.value == "Hello, Testing")
@@ -71,7 +71,7 @@ struct ContainerProviderTests {
         })
 
         let catalogue = Catalogue()
-        await catalogue.register(TestResource.self, resourceProvider: provider)
+        await catalogue.register(TestResource.self, provider: provider)
 
         let instance1 = await catalogue.resolve(TestResource.self)
         let instance2 = await catalogue.resolve(TestResource.self)
