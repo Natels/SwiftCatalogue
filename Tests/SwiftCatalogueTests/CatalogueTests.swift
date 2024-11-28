@@ -17,7 +17,7 @@ struct CatalogueTests {
 
     @Test("can initialize a resource factory provider")
     func testResourceProviderInit() async throws {
-        let provider = FactoryProvider(constructor: { return 1 })
+        let provider = FactoryProvider { return 1 }
 
         try #require(provider != nil)
         #expect(await provider.resolve() == 1)
@@ -27,7 +27,7 @@ struct CatalogueTests {
     func testAddFactoryResourceProvider() async throws {
         #expect(await catalogue.resolve(Int.self) == nil)
 
-        let provider = FactoryProvider(constructor: { return 1 })
+        let provider = FactoryProvider { return 1 }
         await catalogue.register(Int.self, provider: provider)
 
         #expect(await catalogue.resolve(Int.self) != nil)
@@ -37,7 +37,7 @@ struct CatalogueTests {
     func testAddStringFactoryResourceProvider() async throws {
         #expect(await catalogue.resolve(String.self) == nil)
 
-        let provider = FactoryProvider(constructor: { return "Hello, Testing" })
+        let provider = FactoryProvider { return "Hello, Testing" }
         await catalogue.register(String.self, provider: provider)
 
         #expect(await catalogue.resolve(String.self) != nil)
@@ -46,7 +46,7 @@ struct CatalogueTests {
     @Test("can initialize a cached resource provider")
     func testCachedResourceProviderInit() async throws {
         #expect(throws: Never.self) {
-            CachedResourceContainer(constructor: { return "Hello, World!" })
+            CachedResource(constructor: { return "Hello, World!" })
         }
     }
 
@@ -54,7 +54,7 @@ struct CatalogueTests {
     func testAddCachedResourceProvider() async throws {
         #expect(await catalogue.resolve(String.self) == nil)
 
-        let provider = CachedResourceContainer(constructor: { return "Hello, World!" })
+        let provider = CachedResource(constructor: { return "Hello, World!" })
         await catalogue.register(String.self, provider: provider)
 
         #expect(await catalogue.resolve(String.self) != nil)
@@ -62,12 +62,12 @@ struct CatalogueTests {
 
     @Test("can replace a factory provider with a cached provider")
     func testReplaceFactoryWithCachedProvider() async throws {
-        let factory = FactoryProvider(constructor: { return 1 })
+        let factory = FactoryProvider { return 1 }
         await catalogue.register(Int.self, provider: factory)
 
         #expect(await catalogue.resolve(Int.self) == 1)
 
-        let cached = CachedResourceContainer(constructor: { return 2 })
+        let cached = CachedResource(constructor: { return 2 })
         await catalogue.register(Int.self, provider: cached)
 
         #expect(await catalogue.resolve(Int.self) == 2)
@@ -75,12 +75,12 @@ struct CatalogueTests {
 
     @Test("can replace a cached provider with a factory provider")
     func testReplaceCachedWithFactoryProvider() async throws {
-        let cached = CachedResourceContainer(constructor: { return 1 })
+        let cached = CachedResource(constructor: { return 1 })
         await catalogue.register(Int.self, provider: cached)
 
         #expect(await catalogue.resolve(Int.self) == 1)
 
-        let factory = FactoryProvider(constructor: { return 2 })
+        let factory = FactoryProvider { return 2 }
         await catalogue.register(Int.self, provider: factory)
 
         #expect(await catalogue.resolve(Int.self) == 2)
@@ -88,7 +88,7 @@ struct CatalogueTests {
 
     @Test("can resolve a named provider")
     func testResolveNamedProvider() async throws {
-        let factory = FactoryProvider(constructor: { return 1 })
+        let factory = FactoryProvider { return 1 }
         await catalogue.register(Int.self, named: "int factory", provider: factory)
 
         #expect(await catalogue.resolve(Int.self, named: "int factory") == 1)
@@ -96,10 +96,10 @@ struct CatalogueTests {
 
     @Test("can add named providers of the same type")
     func testAddNamedProviders() async throws {
-        let factory = FactoryProvider(constructor: { return 1 })
+        let factory = FactoryProvider { return 1 }
         await catalogue.register(Int.self, named: "int factory", provider: factory)
 
-        let container = CachedResourceContainer(constructor: { return 2 })
+        let container = CachedResource(constructor: { return 2 })
         await catalogue.register(Int.self, named: "int container", provider: container)
 
         #expect(await catalogue.resolve(Int.self, named: "int factory") == 1)
@@ -108,8 +108,8 @@ struct CatalogueTests {
 
     @Test("named providers of different types do not conflict")
     func testNamedProvidersDontConflict() async throws {
-        let intFactory = FactoryProvider(constructor: { return 1 })
-        let stringFactory = FactoryProvider(constructor: { return "test" })
+        let intFactory = FactoryProvider { return 1 }
+        let stringFactory = FactoryProvider { return "test" }
         await catalogue.register(Int.self, named: "factory", provider: intFactory)
         await catalogue.register(String.self, named: "factory", provider: stringFactory)
 

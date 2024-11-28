@@ -7,7 +7,7 @@ struct ContainerProviderTests {
     @Test("can initialize")
     func testContainerProviderInit() async throws {
         let message = "Hello, World!"
-        let provider = CachedResourceContainer(constructor: { return message })
+        let provider = CachedResource(message)
 
         try #require(provider != nil)
         #expect(await provider.resolve() == message)
@@ -19,7 +19,7 @@ struct ContainerProviderTests {
 
         #expect(await catalogue.resolve(String.self) == nil)
 
-        let provider = CachedResourceContainer(constructor: { return "Hello, World!" })
+        let provider = CachedResource("Hello, Testing")
         await catalogue.register(String.self, provider: provider)
 
         #expect(await catalogue.resolve(String.self) != nil)
@@ -31,7 +31,7 @@ struct ContainerProviderTests {
 
         #expect(await catalogue.resolve(Int.self) == nil)
 
-        let provider = CachedResourceContainer(constructor: { return 1 })
+        let provider = CachedResource(1)
         await catalogue.register(Int.self, provider: provider)
 
         #expect(await catalogue.resolve(Int.self) != nil)
@@ -47,9 +47,8 @@ struct ContainerProviderTests {
 
         #expect(await catalogue.resolve(TestRescource.self) == nil)
 
-        let provider = CachedResourceContainer(constructor: {
-            return TestRescource(value: "Hello, Testing")
-        })
+        let provider = CachedResource(TestRescource(value: "Hello, Testing"))
+
         await catalogue.register(TestRescource.self, provider: provider)
 
         #expect(await catalogue.resolve(TestRescource.self) != nil)
@@ -66,7 +65,7 @@ struct ContainerProviderTests {
             }
         }
 
-        let provider = CachedResourceContainer(constructor: {
+        let provider = CachedResource(constructor: {
             return TestResource(value: "Hello, Testing")
         })
 

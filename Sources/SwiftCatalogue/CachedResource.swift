@@ -1,5 +1,5 @@
 /// A container for a cached resource
-public actor CachedResourceContainer<T: Sendable>: ResourceProvider {
+public actor CachedResource<T: Sendable>: ResourceProvider {
     private var instance: T?
 
     var constructor: () async -> T
@@ -8,7 +8,7 @@ public actor CachedResourceContainer<T: Sendable>: ResourceProvider {
         self.constructor = constructor
     }
 
-    public init(instance: T) {
+    public init(_ instance: T) {
         self.instance = instance
         self.constructor = { return instance }
     }
