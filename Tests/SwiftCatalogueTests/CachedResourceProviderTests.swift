@@ -55,6 +55,27 @@ struct ContainerProviderTests {
         #expect(await catalogue.resolve(TestRescource.self)?.value == "Hello, Testing")
     }
 
+    @Test("can cache a resource that is already constructed")
+    func testAddPreinitalisedResource() async throws {
+        let catalogue = Catalogue()
+
+        final class TestResource: Sendable {
+            let value: String
+            init(value: String) {
+                self.value = value
+            }
+        }
+
+        let resource = TestResource(value: "Hello, Testing")
+        let provider = CachedResource(resource)
+
+        await catalogue.register(TestResource.self, provider: provider)
+
+        let resolvedReference = await catalogue.resolve(TestResource.self)
+
+        #expect(resolvedReference === resource)
+    }
+
     @Test("cached resource provider returns the same instance")
     func testCachedResourceProviderReturnsSameInstance() async throws {
         final class TestResource: Sendable {
